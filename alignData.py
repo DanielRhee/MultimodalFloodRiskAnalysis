@@ -106,8 +106,19 @@ def main():
     tilePaths = sorted(glob.glob(str(tilesDir / "bay_area_tile_*.tif")))
     print(f"Found {len(tilePaths)} tiles")
 
+    rgbTemp = np.zeros_like(rgbAligned)
+
     for tilePath in tqdm(tilePaths, desc="Processing tiles"):
-        reprojectTileToTarget(tilePath, rgbAligned, targetTransform, targetCrs)
+        # Clear temp buffer
+        rgbTemp.fill(0)
+        
+        # Reproject to temp buffer
+        reprojectTileToTarget(tilePath, rgbTemp, targetTransform, targetCrs)
+        
+        # Copy valid pixels to main array
+        # Assuming 0 is nodata for RGB (black filler)
+        validMaskTile = np.any(rgbTemp > 0, axis=0)
+        rgbAligned[:, validMaskTile] = rgbTemp[:, validMaskTile]
 
     print("\nComputing intersection mask...")
     validMask = computeIntersectionMask(rgbAligned, elevation)
