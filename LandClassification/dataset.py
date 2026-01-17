@@ -116,7 +116,7 @@ def getImageLabelPairs(datasetRoot):
         roi = parts[-2]
         departmentYear = parts[-3]
 
-        department = departmentYear.split('_')[0]
+        department = departmentYear.split('-')[0]
         year = departmentYear.split('-')[1].split('_')[0]
 
         labelDirName = f"{department}-{year}_AERIAL_LABEL-COSIA"
@@ -173,18 +173,18 @@ def getDataLoaders(datasetRoot, batchSize=None, trainValSplit=None):
 
     trainLoader = DataLoader(
         trainDataset,
-        batchSize=batchSize,
+        batch_size=batchSize,
         shuffle=True,
-        numWorkers=0,
-        pinMemory=True
+        num_workers=0,
+        pin_memory=True
     )
 
     valLoader = DataLoader(
         valDataset,
-        batchSize=1,
+        batch_size=1,
         shuffle=False,
-        numWorkers=0,
-        pinMemory=True
+        num_workers=0,
+        pin_memory=True
     )
 
     return trainLoader, valLoader, len(trainDataset), len(valDataset)

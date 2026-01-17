@@ -89,9 +89,7 @@ class SegmentationTrainer:
             bestPath = os.path.join(config.CHECKPOINT_DIR, 'best_model.pth')
             torch.save(checkpoint, bestPath)
 
-        if epoch % 5 != 0 and not isBest:
-            if os.path.exists(checkpointPath):
-                os.remove(checkpointPath)
+
 
     def train(self, numEpochs=None):
         if numEpochs is None:
@@ -124,8 +122,7 @@ class SegmentationTrainer:
                 self.bestMIoU = mIoU
                 print(f"New best mIoU: {self.bestMIoU:.4f}")
 
-            if epoch % 5 == 0 or isBest:
-                self.saveCheckpoint(epoch, metrics, isBest)
+            self.saveCheckpoint(epoch, metrics, isBest)
 
             self.scheduler.step()
 
