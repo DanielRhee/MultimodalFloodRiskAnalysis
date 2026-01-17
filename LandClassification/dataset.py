@@ -6,7 +6,10 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import rasterio
 
-import config
+try:
+    from . import config
+except (ImportError, ValueError):
+    import config
 
 
 class FLAIRDataset(Dataset):

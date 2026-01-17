@@ -6,9 +6,14 @@ import argparse
 import os
 import matplotlib.pyplot as plt
 
-import config
-from dataset import FloodRiskInferenceDataset
-from model import getModel
+try:
+    from . import config
+    from .dataset import FloodRiskInferenceDataset
+    from .model import getModel
+except (ImportError, ValueError):
+    import config
+    from dataset import FloodRiskInferenceDataset
+    from model import getModel
 
 class FloodRiskPredictor:
     def __init__(self, modelPath, architecture='unet', baseFilters=32, device=None):

@@ -1,7 +1,10 @@
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-import config
+try:
+    from . import config
+except (ImportError, ValueError):
+    import config
 
 class FloodRiskDataset(Dataset):
     def __init__(self, alignedDataPath, floodRiskPath, split='train', tileSize=128, stride=64, minValidRatio=0.7, trainSplit=0.85):

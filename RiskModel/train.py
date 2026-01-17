@@ -7,9 +7,14 @@ import os
 from tqdm import tqdm
 import argparse
 
-import config
-from dataset import FloodRiskDataset
-from model import getModel
+try:
+    from . import config
+    from .dataset import FloodRiskDataset
+    from .model import getModel
+except (ImportError, ValueError):
+    import config
+    from dataset import FloodRiskDataset
+    from model import getModel
 
 class MaskedMSELoss(nn.Module):
     def __init__(self):

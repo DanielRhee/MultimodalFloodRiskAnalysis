@@ -2,7 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import config
+try:
+    from . import config
+except (ImportError, ValueError):
+    import config
 
 
 class ConvBlock(nn.Module):
