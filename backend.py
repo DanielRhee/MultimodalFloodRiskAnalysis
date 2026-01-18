@@ -8,13 +8,13 @@ import uuid
 from datetime import datetime, timedelta
 from typing import Optional, List
 import io
-import google.generativeai as genai
+from google import genai
 import os
 import asyncio
 from functools import partial
 
 from floodRiskService import FloodRiskService
-from database import initDatabase, createUser, getUserByAuth0Id, createProject, getProjectsByUserId, getProjectById, updateProject, deleteProject, saveFileToGridFs, getFileFromGridFs, updateProjectAnnotations, updateProjectChatHistory, updateProjectAnalysis
+from database import initDatabase, createUser, getUserByAuth0Id, createProject, getProjectsByUserId, getProjectById, updateProject, deleteProject, saveFileToGridFs, getFileFromGridFs, updateProjectAnnotations, updateProjectChatHistory, updateProjectAnalysis, updateUserChatHistory
 from authMiddleware import getCurrentUser, optionalAuth
 
 app = FastAPI(title="Flood Risk Analysis API")
@@ -30,6 +30,9 @@ app.add_middleware(
 service = None
 analysisCache = {}
 CACHE_TTL_MINUTES = 60
+geminiApiKey = None
+geniaiClient = None
+consumerSystemPrompt = None
 
 class AnalysisResult:
     def __init__(self, data, timestamp, riskMask=None):
@@ -57,10 +60,11 @@ async def startupEvent():
     except Exception as e:
         print(f"Database initialization failed: {e}")
 
+    global geminiApiKey, geniaiClient
     try:
         with open("geminiApiKey.txt", "r") as f:
-            apiKey = f.read().strip()
-            genai.configure(api_key=apiKey)
+            geminiApiKey = f.read().strip()
+            geniaiClient = genai.Client(api_key=geminiApiKey)
             print("Gemini API Key loaded.")
     except Exception as e:
         print(f"Error loading Gemini API key: {e}")
@@ -422,26 +426,32 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def chatWithGemini(request: ChatRequest, user: dict = Depends(optionalAuth)):
     try:
-        model = genai.GenerativeModel('gemini-pro')
+        if geniaiClient is None:
+            raise HTTPException(status_code=503, detail="Gemini API not initialized")
 
-        chatHistoryForApi = []
+        chatHistory = []
         if consumerSystemPrompt:
-             chatHistoryForApi.append({"role": "user", "parts": [consumerSystemPrompt]})
-             chatHistoryForApi.append({"role": "model", "parts": ["Understood. I will act as a helpful flood risk analysis assistant for homeowners."]})
+             chatHistory.append({"role": "user", "parts": [{"text": consumerSystemPrompt}]})
+             chatHistory.append({"role": "model", "parts": [{"text": "Understood. I will act as a helpful flood risk analysis assistant for homeowners."}]})
 
         for msg in request.history:
             role = "user" if msg['role'] == 'user' else "model"
-            chatHistoryForApi.append({"role": role, "parts": [msg['content']]})
+            chatHistory.append({"role": role, "parts": [{"text": msg['content']}]})
 
-        chat = model.start_chat(history=chatHistoryForApi)
+        chat = geniaiClient.chats.create(model="gemini-2.5-flash", history=chatHistory)
         response = chat.send_message(request.message)
 
-        if request.saveEnabled and request.projectId and user:
+        if request.saveEnabled and user:
             newHistory = request.history + [
                 {"role": "user", "content": request.message},
                 {"role": "model", "content": response.text}
             ]
-            updateProjectChatHistory(request.projectId, newHistory)
+            if request.projectId:
+                updateProjectChatHistory(request.projectId, newHistory)
+            else:
+                dbUser = getUserByAuth0Id(user["auth0Id"])
+                if dbUser:
+                    updateUserChatHistory(dbUser["_id"], newHistory)
 
         return {"response": response.text}
     except Exception as e:

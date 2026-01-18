@@ -200,3 +200,10 @@ def updateProjectAnalysis(projectId, satelliteFileId=None, depthMapFileId=None, 
     if updates:
         updateProject(projectId, updates)
 
+def updateUserChatHistory(userId, chatHistory):
+    usersCollection = getDatabase().users
+    usersCollection.update_one(
+        {"_id": ObjectId(userId)},
+        {"$set": {"chatHistory": chatHistory}}
+    )
+

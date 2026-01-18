@@ -78,9 +78,12 @@ export default function Portal() {
     useEffect(() => {
         if (isAuthenticated && router.query.type) {
             loadProjects();
+            if (isConsumer) {
+                fetchUserHistory();
+            }
             setShowProjectModal(true);
         }
-    }, [isAuthenticated, router.query.type]);
+    }, [isAuthenticated, router.query.type, isConsumer]);
 
     const loadProjects = async () => {
         try {
@@ -94,6 +97,20 @@ export default function Portal() {
             console.error("Failed to load projects:", err);
         } finally {
             setProjectsLoading(false);
+        }
+    };
+
+    const fetchUserHistory = async () => {
+        try {
+            const response = await authenticatedFetch('http://localhost:8000/me');
+            if (response.ok) {
+                const data = await response.json();
+                if (!currentProject) {
+                    setChatMessages(data.chatHistory || []);
+                }
+            }
+        } catch (err) {
+            console.error("Failed to load user history:", err);
         }
     };
 
@@ -478,7 +495,12 @@ export default function Portal() {
     };
 
     const continueWithoutSaving = () => {
-        setSaveEnabled(false);
+        if (isConsumer) {
+            setSaveEnabled(true);
+            fetchUserHistory();
+        } else {
+            setSaveEnabled(false);
+        }
         setCurrentProject(null);
         setShowProjectModal(false);
     };
@@ -585,7 +607,7 @@ export default function Portal() {
                                 onClick={continueWithoutSaving}
                                 className={styles.skipSaveBtn}
                             >
-                                Continue without saving
+                                Continue {isConsumer ? '' : 'without saving'}
                             </button>
 
                             {projectsLoading ? (
