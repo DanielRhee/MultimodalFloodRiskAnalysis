@@ -1,9 +1,11 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { useAuth } from '@/context/authContext';
+import { Loader } from 'lucide-react';
 import styles from '@/styles/Home.module.css';
 
 export default function Help() {
+    const { isAuthenticated, isLoading, logout, loginWithRedirect } = useAuth();
     return (
         <div className={styles.container}>
             <Head>
@@ -11,10 +13,50 @@ export default function Help() {
             </Head>
 
             <header className={styles.header}>
-                <div className={styles.brand}>Flood Risk Analysis</div>
-                <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-dim)' }}>
-                    <ArrowLeft size={16} /> Back to Home
-                </Link>
+                <Link href="/" className={styles.brand} style={{ textDecoration: 'none' }}>Flood Risk Analysis</Link>
+                <nav style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                    <Link href="/api" style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>API</Link>
+                    <Link href="/about" style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>About</Link>
+                    <Link href="/help" style={{ color: 'var(--text-main)', fontSize: '0.9rem', textDecoration: 'none', fontWeight: 600 }}>Help</Link>
+                    <a href="https://github.com/danielrhee/MultimodalFloodRiskAnalysis" target="_blank" rel="noopener" style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>GitHub</a>
+                    {isLoading ? (
+                        <Loader size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                    ) : isAuthenticated ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <button
+                                onClick={logout}
+                                style={{
+                                    background: 'none', border: 'none', padding: 0, fontSize: '0.85rem', cursor: 'pointer',
+                                    color: 'var(--text-dim)'
+                                }}
+                            >
+                                Logout
+                            </button>
+                            <Link
+                                href="/portal?type=person"
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '0.25rem',
+                                    background: '#000', color: '#fff', border: 'none', borderRadius: '4px',
+                                    padding: '0.4rem 0.75rem', fontSize: '0.85rem', cursor: 'pointer',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                Portal
+                            </Link>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={() => loginWithRedirect()}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '0.25rem',
+                                background: '#000', color: '#fff', border: 'none', borderRadius: '4px',
+                                padding: '0.4rem 0.75rem', fontSize: '0.85rem', cursor: 'pointer'
+                            }}
+                        >
+                            Sign In
+                        </button>
+                    )}
+                </nav>
             </header>
 
             <main className={styles.main} style={{ alignItems: 'flex-start', maxWidth: '800px' }}>

@@ -27,27 +27,37 @@ export default function Home() {
       </Head>
 
       <header className={styles.header}>
-        <div className={styles.brand}>Flood Risk Analysis</div>
+        <Link href="/" className={styles.brand} style={{ textDecoration: 'none' }}>Flood Risk Analysis</Link>
         <nav style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <Link href="/help" style={{ color: 'var(--text-dim)', fontSize: '0.9rem' }}>Help</Link>
-          <a href="https://github.com/danielrhee/MultimodalFloodRiskAnalysis" target="_blank" rel="noopener" style={{ color: 'var(--text-dim)', fontSize: '0.9rem' }}>GitHub</a>
+          <Link href="/api" style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>API</Link>
+          <Link href="/about" style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>About</Link>
+          <Link href="/help" style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>Help</Link>
+          <a href="https://github.com/danielrhee/MultimodalFloodRiskAnalysis" target="_blank" rel="noopener" style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>GitHub</a>
 
           {isLoading ? (
             <Loader size={16} style={{ animation: 'spin 1s linear infinite' }} />
           ) : isAuthenticated ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-main)' }}>{user?.name || user?.email}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <button
                 onClick={logout}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: '0.25rem',
-                  background: 'none', border: '1px solid var(--border)', borderRadius: '4px',
-                  padding: '0.4rem 0.75rem', fontSize: '0.85rem', cursor: 'pointer',
+                  background: 'none', border: 'none', padding: 0, fontSize: '0.85rem', cursor: 'pointer',
                   color: 'var(--text-dim)'
                 }}
               >
-                <LogOut size={14} /> Logout
+                Logout
               </button>
+              <Link
+                href="/portal?type=person"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.25rem',
+                  background: '#000', color: '#fff', border: 'none', borderRadius: '4px',
+                  padding: '0.4rem 0.75rem', fontSize: '0.85rem', cursor: 'pointer',
+                  textDecoration: 'none'
+                }}
+              >
+                Portal
+              </Link>
             </div>
           ) : (
             <button
@@ -58,7 +68,7 @@ export default function Home() {
                 padding: '0.4rem 0.75rem', fontSize: '0.85rem', cursor: 'pointer'
               }}
             >
-              <LogIn size={14} /> Login
+              Sign In
             </button>
           )}
         </nav>
@@ -70,7 +80,7 @@ export default function Home() {
         </h1>
 
         <p className={styles.subtitle}>
-          A simple, efficient tool combining satellite imagery and depth maps to predict flood risks in real-time.
+          A powerful and efficient tool combining satellite imagery and depth maps to predict long term flood risks and increase sustainability in urban planning.
         </p>
 
         <div className={styles.ctaWrapper}>
@@ -113,16 +123,43 @@ export default function Home() {
         <div className={styles.features}>
           <div className={styles.feature}>
             <h3>Precise Analysis</h3>
-            <p>Utilizes advanced computer vision to detect water bodies and elevation risks.</p>
+            <p>Utilizes an advanced multimodal foundation model to detect water bodies and elevation risks.</p>
           </div>
           <div className={styles.feature}>
             <h3>Instant Feedback</h3>
-            <p>Get immediate risk assessments processed locally or via high-speed cloud APIs.</p>
+            <p>Get immediate risk assessments processed for areas based on the local area</p>
           </div>
           <div className={styles.feature}>
-            <h3>Secure Processing</h3>
-            <p>Your data is processed securely and efficiently without unnecessary retention.</p>
+            <h3>Sustainable</h3>
+            <p>Provides instant analysis on smart building zones and critical ecosystems</p>
           </div>
+        </div>
+
+        <h2 className={styles.sectionTitle}>How to Use</h2>
+        <div className={styles.features} style={{ marginTop: '0', borderTop: 'none' }}>
+          <div className={styles.feature}>
+            <h3>Consumer</h3>
+            <p>Choose smart and sustainable housing options in areas with lower flood risk and chat with an AI expert on reducing risk. </p>
+          </div>
+          <div className={styles.feature}>
+            <h3>Enterprise</h3>
+            <p>Access advanced urban planning tools, analyze critical wetlands, zone buildings sustainably </p>
+          </div>
+          <div className={styles.feature}>
+            <h3>API</h3>
+            <p>Integrate risk analysis directly into your applications. For government, insurance, and building developers</p>
+          </div>
+        </div>
+
+        <div className={styles.aboutSection}>
+          <h2 className={styles.aboutTitle}>About the Project</h2>
+          <p className={styles.aboutText}>
+            The Multimodal Flood Risk Analysis Platform is an advanced solution designed to empower individuals,
+            city planners, and enterprises with actionable insights into flood hazards and enhance sustainability. By leveraging custom
+            machine learning and high-resolution spatial data, we aim to help build more resilient and sustainabile communities in the face
+            of an evolving climate. {' '}
+            <Link href="/about" style={{ color: '#000', fontWeight: 600, textDecoration: 'underline' }}>Read more</Link>
+          </p>
         </div>
       </main>
 
@@ -132,4 +169,3 @@ export default function Home() {
     </div>
   );
 }
-

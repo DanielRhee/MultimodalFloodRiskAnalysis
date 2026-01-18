@@ -531,7 +531,9 @@ export default function Portal() {
 
             <header className={styles.header}>
                 <div className={styles.brand}>
-                    Flood Risk Analysis {isEnterprise ? 'Enterprise' : 'Consumer'}
+                    <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        Flood Risk Analysis {isEnterprise ? 'Enterprise' : 'Consumer'}
+                    </Link>
                     {currentProject && (
                         <span style={{ marginLeft: '1rem', color: 'var(--text-dim)', fontSize: '0.9rem' }}>
                             {isEditingName ? (
@@ -571,14 +573,41 @@ export default function Portal() {
                     <button
                         onClick={() => { loadProjects(); setShowProjectModal(true); }}
                         className={styles.navLink}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: 'none', border: '1px solid var(--border)', borderRadius: '4px', padding: '0.4rem 0.75rem', cursor: 'pointer' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: 'none', border: 'none', padding: '0.4rem 0.75rem', cursor: 'pointer' }}
                     >
                         <FolderOpen size={14} /> Projects
                     </button>
-                    <Link href="/" className={styles.navLink}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <ArrowLeft size={16} /> Back
-                        </span>
+                    <Link href="/api" className={styles.navLink} style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>
+                        API
+                    </Link>
+                    <Link href="/about" className={styles.navLink} style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>
+                        About
+                    </Link>
+                    <Link href="/help" className={styles.navLink} style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>
+                        Help
+                    </Link>
+                    <a href="https://github.com/danielrhee/MultimodalFloodRiskAnalysis" target="_blank" rel="noopener" className={styles.navLink} style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textDecoration: 'none' }}>
+                        GitHub
+                    </a>
+                    <button
+                        onClick={logout}
+                        style={{
+                            background: 'none', border: 'none', padding: 0, fontSize: '0.9rem', cursor: 'pointer',
+                            color: 'var(--text-dim)', marginLeft: '0.5rem'
+                        }}
+                    >
+                        Logout
+                    </button>
+                    <Link
+                        href="/portal?type=person"
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.25rem',
+                            background: '#000', color: '#fff', border: 'none', borderRadius: '4px',
+                            padding: '0.4rem 0.75rem', fontSize: '0.9rem', cursor: 'pointer',
+                            textDecoration: 'none'
+                        }}
+                    >
+                        Portal
                     </Link>
                 </div>
             </header>
@@ -651,7 +680,8 @@ export default function Portal() {
                         </div>
                     </div>
                 </div>
-            )}
+            )
+            }
 
             <main className={styles.main}>
                 <div className={styles.sidebar}>
