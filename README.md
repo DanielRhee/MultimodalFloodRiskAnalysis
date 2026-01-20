@@ -1,5 +1,7 @@
 # MultimodalFloodRiskAnalysis
 
+This project won 1st place in Sustainability at CruzHacks 2026. https://devpost.com/software/flood-risk-analysis
+
 ## Inspiration
 Flooding is one of the most prevalent and deadly natural disasters and is only becoming increasingly common with record rainfalls brought by climate change. Fooding has cost the United States 180 billion per year and has directly caused thousands of death since 2000 (1) (2). Continued urban development is unsafe, unsustainable, and incredibly costly. Current flood risk analysis is often constrained to flood plains, relies on anecdotal evidence, and can be difficult to access making it unreliable to use and just not good for life threatening situations (3). Our project, Flood Risk Analysis, provides a data driven and accessible approach of analyzing flood risk in areas allowing for smarter, more sustainable, and safer building and living choices.
 
